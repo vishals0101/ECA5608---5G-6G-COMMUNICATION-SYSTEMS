@@ -1,0 +1,31 @@
+% Comparison of Mobile Communication Generations
+
+clc;
+clear;
+close all;
+
+% Define Communication Generations
+generation = ["1G"; "2G"; "2G"; "3G"; "4G"; "5G"];
+
+% Define Mobile Communication Systems
+system = ["AMPS"; "GSM"; "IS-95"; "UMTS"; "LTE"; "5G NR"];
+
+% Define Multiple Access Methods
+accessMethod = ["FDMA"; "TDMA"; "CDMA"; "WCDMA"; "OFDMA"; "OFDMA-based"];
+
+% Define Key Features
+keyIdea = [
+    "Separate frequency channels";
+    "Separate time slots";
+    "Code-based user separation";
+    "Wideband code-based access";
+    "Orthogonal frequency resources";
+    "Flexible OFDM-based radio access"
+];
+
+% Create Comparison Table
+results = table(generation, system, accessMethod, keyIdea);
+
+% Display Results
+disp('Comparison of Mobile Communication Generations:');
+disp(results);
