@@ -1,0 +1,89 @@
+```matlab
+% Experiment: Wi-Fi Signal Strength and Channel Monitoring
+clc;
+clear;
+close all;
+
+%% Simulation Parameters
+targetSSID = "YOUR_WIFI_SSID";
+numSamples = 10;
+sampleInterval = 2;       % Sampling interval in seconds
+
+% Simulated Wi-Fi channel numbers (1 to 14)
+availableChannels = 1:14;
+
+% Initialize result arrays
+elapsedTime = zeros(numSamples, 1);
+targetRSSI = -127 * ones(numSamples, 1);
+targetChannel = -1 * ones(numSamples, 1);
+visibleAPs = zeros(numSamples, 1);
+channelCounts = zeros(numSamples, 14);
+
+%% Simulate Wi-Fi Measurements
+for sampleNo = 1:numSamples
+
+    % Simulate the number of visible access points
+    numAPs = randi([5, 20]);
+    visibleAPs(sampleNo) = numAPs;
+
+    % Simulate access point channels and RSSI values
+    apChannels = randi([1, 11], numAPs, 1);
+    apRSSI = randi([-85, -35], numAPs, 1);
+
+    % Count access points on each channel
+    for ch = 1:14
+        channelCounts(sampleNo, ch) = sum(apChannels == ch);
+    end
+
+    % Simulate detection of the target network
+    targetFound = rand() > 0.2;
+
+    if targetFound
+        targetRSSI(sampleNo) = randi([-70, -35]);
+        targetChannel(sampleNo) = randi([1, 11]);
+    end
+
+    elapsedTime(sampleNo) = (sampleNo - 1) * sampleInterval;
+
+    fprintf('Sample: %d | Time: %.1f s | RSSI: %d dBm | Channel: %d | Visible APs: %d\n', ...
+        sampleNo, elapsedTime(sampleNo), targetRSSI(sampleNo), ...
+        targetChannel(sampleNo), visibleAPs(sampleNo));
+
+    pause(sampleInterval);
+end
+
+%% Display Channel Counts
+channelNames = "Channel_" + string(availableChannels);
+
+channelTable = array2table(channelCounts, ...
+    'VariableNames', cellstr(channelNames));
+
+disp('Access Point Counts by Channel:');
+disp(channelTable);
+
+%% Plot 1: Target Wi-Fi Signal Strength
+figure;
+plot(elapsedTime, targetRSSI, 'o-', 'LineWidth', 1.5);
+grid on;
+xlabel('Elapsed Time (seconds)');
+ylabel('RSSI (dBm)');
+title('Target Wi-Fi Signal Strength');
+
+%% Plot 2: Number of Visible Access Points
+figure;
+plot(elapsedTime, visibleAPs, 's-', 'LineWidth', 1.5);
+grid on;
+xlabel('Elapsed Time (seconds)');
+ylabel('Number of Access Points');
+title('Visible Wi-Fi Access Points');
+
+%% Plot 3: Access Point Distribution by Channel
+figure;
+bar(availableChannels, sum(channelCounts, 1));
+grid on;
+xlabel('Wi-Fi Channel');
+ylabel('Number of Access Points');
+title('Wi-Fi Channel Distribution');
+
+%% D
+```
