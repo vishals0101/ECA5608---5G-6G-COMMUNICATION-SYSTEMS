@@ -1,0 +1,105 @@
+```matlab
+% Experiment 3: Illustrative Propagation and Frequency Reuse
+
+clc;
+clear;
+close all;
+
+%% Representative Frequency Bands
+freqGHz = [0.7 3.5 28];
+freqMHz = freqGHz * 1000;
+
+bandName = ["Sub-1 GHz"; "Mid-band"; "mmWave"];
+
+%% Link Budget Parameters
+txPowerdBm = 30;
+gtDbi = 0;
+grDbi = 0;
+
+distanceKm = logspace(log10(0.1), log10(2), 200);
+distanceAtPointKm = 0.5;
+
+%% Free-Space Path Loss Calculation
+% Formula: FSPL = 32.44 + 20log10(f) + 20log10(d)
+% Frequency is in MHz and distance is in km.
+
+fspl = @(fMHz, dKm) ...
+    32.44 + 20*log10(fMHz) + 20*log10(dKm);
+
+lossAtPoint = fspl(freqMHz, distanceAtPointKm);
+
+%% Received Power Calculation
+% Received Power = Transmitted Power + Antenna Gains - FSPL
+
+rxAtPoint = txPowerdBm + gtDbi + grDbi - lossAtPoint;
+
+%% Display Link Budget Results
+linkTable = table( ...
+    bandName, ...
+    freqGHz(:), ...
+    lossAtPoint(:), ...
+    rxAtPoint(:), ...
+    'VariableNames', ...
+    {'Band', 'Frequency_GHz', 'FSPL_dB', 'EstimatedRx_dBm'});
+
+disp('Link Budget Results at 0.5 km:');
+disp(linkTable);
+
+%% Plot 1: Free-Space Path Loss
+figure;
+
+tiledlayout(1, 2);
+
+nexttile;
+hold on;
+grid on;
+
+for k = 1:numel(freqMHz)
+    plot(distanceKm, fspl(freqMHz(k), distanceKm), ...
+        'LineWidth', 1.5);
+end
+
+set(gca, 'XScale', 'log');
+
+xlabel('Distance (km)');
+ylabel('Path Loss (dB)');
+title('Free-Space Path Loss');
+
+legend(bandName, 'Location', 'northwest');
+
+%% Plot 2: Estimated Received Power
+nexttile;
+hold on;
+grid on;
+
+for k = 1:numel(freqMHz)
+    rx = txPowerdBm + gtDbi + grDbi ...
+        - fspl(freqMHz(k), distanceKm);
+
+    plot(distanceKm, rx, 'LineWidth', 1.5);
+end
+
+set(gca, 'XScale', 'log');
+
+xlabel('Distance (km)');
+ylabel('Received Power (dBm)');
+title('Illustrative Received Power');
+
+legend(bandName, 'Location', 'southwest');
+
+%% Frequency Reuse and Co-Channel Interference
+cellRadiusKm = 0.5;
+
+reuseN = [1 3 7 12];
+
+pathLossExponent = 3.5;
+
+% Approximate reuse distance
+reuseDistance = sqrt(3 * reuseN) * cellRadiusKm;
+
+% Simplified SIR estimate assuming six first-tier interferers
+sirLinear = (reuseDistance ./ cellRadiusKm) ...
+    .^ pathLossExponent / 6;
+
+sirDb = 10 * l*
+```
