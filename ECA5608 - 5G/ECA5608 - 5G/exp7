@@ -1,0 +1,15 @@
+clc; clear; close all;
+Nsc = 24; % Simplified number of subcarriers
+Nsym = 14; % OFDM symbols per slot
+grid = zeros(Nsym,Nsc);
+% Simplified DL assignment: symbols 1-10
+grid(1:10,:) = 1;
+% Simplified UL assignment: symbols 11-14
+
+grid(11:14,:) = 2;
+figure
+imagesc(grid)
+grid on
+xlabel('Subcarrier Index')
+ylabel('OFDM Symbol Index')
+title('Simplified 5G NR Time-Frequency Resource Grid')
