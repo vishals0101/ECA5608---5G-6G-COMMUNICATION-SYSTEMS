@@ -1,0 +1,71 @@
+clc;
+clear;
+close all;
+
+%% 6G IRS-Assisted Communication Simulation
+c = 3e8;
+f = 100e9;
+Pt = 20;
+Gt = 10;
+Gr = 10;
+d1 = 50;
+d2 = 50;
+eta = 0.8;
+%% Wavelength
+lambda = c/f;
+%% Direct Communication Distance
+d_direct = d1 + d2;
+%% Free Space Path Loss - Direct Link
+PL_direct = 20*log10(4*pi*d_direct/lambda);
+%% Direct Received Power
+Pr_direct = Pt + Gt + Gr - PL_direct;
+%% IRS Element Configuration
+N = [16 32 64 128 256];
+%% Total IRS Path Loss
+PL_IRS = 20*log10(4*pi*d1/lambda) + ...
+20*log10(4*pi*d2/lambda);
+%% IRS Gain
+IRS_gain = 10*log10(N*eta);
+%% IRS-Assisted Received Power
+Pr_IRS = Pt + Gt + Gr - PL_IRS + IRS_gain;
+%% IRS Gain Improvement
+Gain_improvement = Pr_IRS - Pr_direct;
+fprintf('6G IRS-Assisted Communication Simulation\n');
+fprintf('Carrier Frequency = %.2f GHz\n',f/1e9);
+fprintf('Wavelength = %.4f m\n',lambda);
+fprintf('Direct Path Loss = %.2f dB\n',PL_direct);
+fprintf('Direct Received Power = %.2f dBm\n',Pr_direct);
+fprintf('\nIRS Results:\n');
+
+for k = 1:length(N)
+fprintf('N = %d | IRS Gain = %.2f dB |
+',N(k),IRS_gain(k));
+fprintf('Received Power = %.2f dBm | ',Pr_IRS(k));
+fprintf('Improvement = %.2f dB\n',Gain_improvement(k));
+end
+%% Plot 1 - IRS Elements vs Received Power
+figure;
+plot(N,Pr_IRS,'-o','LineWidth',2);
+hold on;
+yline(Pr_direct,'--','Direct Link');
+grid on;
+xlabel('Number of IRS Elements');
+ylabel('Received Power (dBm)');
+title('IRS Elements vs Received Power');
+legend('IRS-Assisted','Direct Link');
+%% Plot 2 - IRS Elements vs Gain Improvement
+figure;
+plot(N,Gain_improvement,'-s','LineWidth',2);
+grid on;
+xlabel('Number of IRS Elements');
+ylabel('Gain Improvement (dB)');
+title('IRS Gain Improvement for 6G Communication');
+%% Plot 3 - Path Loss vs Distance
+distance = 10:10:200;
+PL = 20*log10(4*pi*distance/lambda);
+figure;
+plot(distance,PL,'-o','LineWidth',2);
+grid on;
+xlabel('Distance (m)');
+ylabel('Path Loss (dB)');
+title('6G High-Frequency Path Loss vs Distance');
