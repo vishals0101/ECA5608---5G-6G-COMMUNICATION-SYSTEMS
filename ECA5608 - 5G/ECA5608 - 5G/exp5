@@ -1,0 +1,15 @@
+clc; clear; close all;
+BW1 = 20; % Component carrier bandwidth (MHz)
+SE = 4; % Spectral efficiency (bits/s/Hz)
+Ncc = 1; % Number of component carriers
+BWagg = BW1*Ncc;
+Throughput = BWagg*SE; % Mbps for MHz × bits/s/Hz
+disp('Single Component Carrier')
+disp(['Bandwidth = ',num2str(BWagg),' MHz'])
+disp(['Estimated Throughput = ',num2str(Throughput),' Mbps'])
+figure
+bar(Ncc,Throughput)
+grid on
+xlabel('Number of Component Carriers')
+ylabel('Estimated Throughput (Mbps)')
+title('LTE-Advanced Single Carrier Throughput')
